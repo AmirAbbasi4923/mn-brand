@@ -1,0 +1,292 @@
+// Replace this with your Google Apps Script Web App URL after deploying
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycEFcGgSNC3NfU3O80xTryyRcclbaTPIOi_3DQarZBAz4VXSSIWK8cbaIN6tpAfdykHQ/exec'; 
+
+// DOM Elements
+const perfumesGrid = document.getElementById('perfumes-grid');
+const watchesGrid = document.getElementById('watches-grid');
+const electronicsGrid = document.getElementById('electronics-grid');
+
+const cartIcon = document.getElementById('cart-icon');
+const cartDrawer = document.getElementById('cart-drawer');
+const cartOverlay = document.getElementById('cart-overlay');
+const closeCartBtn = document.getElementById('close-cart');
+const cartItemsContainer = document.getElementById('cart-items');
+const cartCount = document.getElementById('cart-count');
+const cartSubtotalEl = document.getElementById('cart-subtotal');
+const cartGrandTotalEl = document.getElementById('cart-grand-total');
+const proceedCheckoutBtn = document.getElementById('proceed-checkout');
+
+const checkoutModal = document.getElementById('checkout-modal');
+const checkoutOverlay = document.getElementById('checkout-overlay');
+const closeCheckoutBtn = document.getElementById('close-checkout');
+const checkoutForm = document.getElementById('checkout-form');
+const checkoutTotalEl = document.getElementById('checkout-total');
+const confirmOrderBtn = document.getElementById('confirm-order-btn');
+
+const successModal = document.getElementById('success-modal');
+const successOverlay = document.getElementById('success-overlay');
+const closeSuccessBtn = document.getElementById('close-success');
+
+// Cart State
+let cart = [];
+const DELIVERY_CHARGE = 0;
+
+// Initialize
+function init() {
+  renderProducts();
+  setupEventListeners();
+}
+
+// Render Products
+function renderProducts() {
+  const perfumes = products.filter(p => p.category === 'perfume');
+  const watches = products.filter(p => p.category === 'watch');
+  const electronics = products.filter(p => p.category === 'electronics');
+
+  window.selectPerfumeSize = function(id, price, btn) {
+    document.getElementById(`price-${id}`).innerText = `Rs. ${price}`;
+    const container = document.getElementById(`sizes-${id}`);
+    container.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+
+  perfumes.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    
+    let sizeOptions = p.sizes.map((s, index) => 
+      `<button class="size-btn ${index === 0 ? 'active' : ''}" data-size="${s.size}" data-price="${s.price}" onclick="selectPerfumeSize('${p.id}', ${s.price}, this)">${s.size}</button>`
+    ).join('');
+
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <h4>${p.name}</h4>
+      <p>${p.description}</p>
+      <div class="size-toggles" id="sizes-${p.id}">
+        ${sizeOptions}
+      </div>
+      <div class="product-price" id="price-${p.id}">Rs. ${p.sizes[0].price}</div>
+      <button class="btn" onclick="addToCart('${p.id}', 'perfume')">Add to Cart</button>
+    `;
+    perfumesGrid.appendChild(card);
+  });
+
+  const watchBrands = [...new Set(watches.map(w => w.brand))];
+  
+  watchBrands.forEach(brand => {
+    const brandHeading = document.createElement('h3');
+    brandHeading.className = 'brand-section-heading';
+    brandHeading.innerText = `${brand} Watches`;
+    watchesGrid.appendChild(brandHeading);
+    
+    watches.filter(w => w.brand === brand).forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <div class="brand-label">${p.brand}</div>
+        <h4>${p.name}</h4>
+        <div class="product-price">Rs. ${p.price}</div>
+        <button class="btn" onclick="addToCart('${p.id}', 'watch')">Add to Cart</button>
+      `;
+      watchesGrid.appendChild(card);
+    });
+  });
+
+  electronics.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <h4>${p.name}</h4>
+      <p>${p.description}</p>
+      <div class="product-price">Rs. ${p.price}</div>
+      <button class="btn" onclick="addToCart('${p.id}', 'electronics')">Add to Cart</button>
+    `;
+    electronicsGrid.appendChild(card);
+  });
+}
+
+// Add to Cart
+window.addToCart = function(id, category) {
+  const product = products.find(p => p.id === id);
+  let price = 0;
+  let cartItemName = product.name;
+
+  if (category === 'perfume') {
+    const container = document.getElementById(`sizes-${id}`);
+    const activeBtn = container.querySelector('.size-btn.active');
+    const size = activeBtn.getAttribute('data-size');
+    price = parseInt(activeBtn.getAttribute('data-price'), 10);
+    cartItemName = `${product.name} (${size})`;
+  } else {
+    price = product.price;
+  }
+
+  const existingItem = cart.find(item => item.name === cartItemName);
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: cartItemName,
+      price: price,
+      image: product.image,
+      quantity: 1
+    });
+  }
+
+  updateCartUI();
+  openCart();
+};
+
+// Remove from Cart
+window.removeFromCart = function(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+};
+
+// Update Cart UI
+function updateCartUI() {
+  cartItemsContainer.innerHTML = '';
+  let subtotal = 0;
+  let totalQuantity = 0;
+
+  cart.forEach((item, index) => {
+    subtotal += item.price * item.quantity;
+    totalQuantity += item.quantity;
+
+    const itemEl = document.createElement('div');
+    itemEl.className = 'cart-item';
+    itemEl.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div class="cart-item-info">
+        <h5>${item.name}</h5>
+        <div style="font-size: 0.8rem; color: var(--text-secondary);">Qty: ${item.quantity}</div>
+        <div class="cart-item-price">Rs. ${item.price * item.quantity}</div>
+      </div>
+      <button class="remove-item" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button>
+    `;
+    cartItemsContainer.appendChild(itemEl);
+  });
+
+  cartCount.innerText = totalQuantity;
+  cartSubtotalEl.innerText = `Rs. ${subtotal}`;
+  
+  const grandTotal = subtotal > 0 ? subtotal + DELIVERY_CHARGE : 0;
+  cartGrandTotalEl.innerText = `Rs. ${grandTotal}`;
+  checkoutTotalEl.innerText = `Rs. ${grandTotal}`;
+}
+
+// Drawer & Modal Listeners
+function setupEventListeners() {
+  // Cart Drawer
+  cartIcon.addEventListener('click', openCart);
+  closeCartBtn.addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', closeCart);
+
+  // Checkout Modal
+  proceedCheckoutBtn.addEventListener('click', () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    closeCart();
+    checkoutModal.classList.add('show');
+    checkoutOverlay.classList.add('show');
+  });
+
+  closeCheckoutBtn.addEventListener('click', closeCheckout);
+  checkoutOverlay.addEventListener('click', closeCheckout);
+
+  // Success Modal
+  closeSuccessBtn.addEventListener('click', () => {
+    successModal.classList.remove('show');
+    successOverlay.classList.remove('show');
+    window.location.hash = '';
+    window.scrollTo(0,0);
+  });
+
+  // Form Submit
+  checkoutForm.addEventListener('submit', handleCheckoutSubmit);
+}
+
+function openCart() {
+  cartDrawer.classList.add('open');
+  cartOverlay.classList.add('show');
+}
+
+function closeCart() {
+  cartDrawer.classList.remove('open');
+  cartOverlay.classList.remove('show');
+}
+
+function closeCheckout() {
+  checkoutModal.classList.remove('show');
+  checkoutOverlay.classList.remove('show');
+}
+
+// Handle Order Submission
+async function handleCheckoutSubmit(e) {
+  e.preventDefault();
+  confirmOrderBtn.disabled = true;
+  confirmOrderBtn.innerText = 'Processing...';
+
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const grandTotal = subtotal + DELIVERY_CHARGE;
+  const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
+
+  const orderData = {
+    orderId: orderId,
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    address: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    notes: document.getElementById('notes').value,
+    products: cart.map(item => `${item.name} (x${item.quantity})`).join(', '),
+    quantity: totalQuantity,
+    totalPrice: grandTotal,
+    date: new Date().toLocaleString()
+  };
+
+  try {
+    if (SCRIPT_URL) {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(orderData),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
+        // Using text/plain avoids CORS preflight issues with Google Apps Script
+      });
+    } else {
+      // Simulate network request if no URL provided
+      console.log('No Script URL provided, simulating success.', orderData);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+
+    showSuccess(orderData);
+  } catch (error) {
+    console.error('Order submission failed:', error);
+    alert('There was an issue processing your order. Please try again.');
+  } finally {
+    confirmOrderBtn.disabled = false;
+    confirmOrderBtn.innerText = 'Confirm Order';
+  }
+}
+
+function showSuccess(data) {
+  closeCheckout();
+  checkoutForm.reset();
+  cart = [];
+  updateCartUI();
+
+  document.getElementById('success-order-id').innerText = data.orderId;
+  document.getElementById('success-total').innerText = `Rs. ${data.totalAmount}`;
+  document.getElementById('success-name').innerText = data.name;
+
+  successModal.classList.add('show');
+  successOverlay.classList.add('show');
+}
+
+// Boot up
+init();
