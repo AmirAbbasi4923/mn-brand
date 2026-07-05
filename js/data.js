@@ -30,11 +30,11 @@ perfumeData.forEach(item => {
 });
 
 const watchData = [
-  { id: 'alfajar1', brand: 'Al Fajr', name: "Beautiful Azan Muslim Al Fajr Gift Prayer Alarms Holy Qur'an Bookmark Mecca Sensor Qibla Compass Digital Waterproof Watch", price: 2700, image: 'images/alfajar1.avif', description: 'Luxury Al Fajr timepiece' },
-  { id: 'alfajar2', brand: 'Al Fajr', name: 'Al Fajr WQ-18 Compass Watch (Grey)', price: 2700, image: 'images/alfajar2.jpg', description: 'Luxury Al Fajr timepiece' },
-  { id: 'alfajar3', brand: 'Al Fajr', name: 'Al Fajar Stainless Steel Dual Time Watch with Azan, Qibla, Prayer Alarm', price: 2700, image: 'images/alfajar3.webp', description: 'Luxury Al Fajr timepiece' },
-  { id: 'alfajar4', brand: 'Al Fajr', name: 'ALFAJR PREMIER 360 STONE DIAL', price: 2700, image: 'images/alfjar3.webp', description: 'Luxury Al Fajr timepiece' },
-  { id: 'patek1', brand: 'Patek Philippe', name: "Patek Philippe 5711/1A-010 Automatic Black-Blue Dial Luxury Men's Watch, Mechanical, Self-winding", price: 2900, image: 'images/patek1.jpg', description: 'Exclusive Patek Philippe design' },
+  { id: 'alfajar1', brand: 'Al Fajr', name: "Beautiful Azan Muslim Al Fajr Gift Prayer Alarms Holy Qur'an Bookmark Mecca Sensor Qibla Compass Digital Waterproof Watch", price: 12000, image: 'images/alfajar1.avif', description: 'Luxury Al Fajr timepiece' },
+  { id: 'alfajar2', brand: 'Al Fajr', name: 'Al Fajr WQ-18 Compass Watch (Grey)', price: 12000, image: 'images/alfajar2.jpg', description: 'Luxury Al Fajr timepiece' },
+  { id: 'alfajar3', brand: 'Al Fajr', name: 'Al Fajar Stainless Steel Dual Time Watch with Azan, Qibla, Prayer Alarm', price: 12000, image: 'images/alfajar3.webp', description: 'Luxury Al Fajr timepiece' },
+  { id: 'alfajar4', brand: 'Al Fajr', name: 'ALFAJR PREMIER 360 STONE DIAL', price: 12000, image: 'images/alfjar3.webp', description: 'Luxury Al Fajr timepiece' },
+  { id: 'patek1', brand: 'Patek Philippe', name: "Patek Philippe 5711/1A-010 Automatic Black-Blue Dial Luxury Men's Watch, Mechanical, Self-winding", price: 3000, image: 'images/patek1.jpg', description: 'Exclusive Patek Philippe design' },
   { id: 'patek2', brand: 'Patek Philippe', name: 'Patek Philippe Geneve Nautilus Series Wrist Watch For Men', price: 2900, image: 'images/patek2.webp', description: 'Exclusive Patek Philippe design' },
   { id: 'patek3', brand: 'Patek Philippe', name: 'PATEK PHILIPPE NAUTILUS DIAMONDS TIFFANY & Co Blue Dial Limited Edition Watch', price: 2900, image: 'images/patek3.jpg', description: 'Exclusive Patek Philippe design' },
   { id: 'patek4', brand: 'Patek Philippe', name: "Patek Philippe Ladies' Nautilus 7118 Diamond-set Bezel — Brand New", price: 2900, image: 'images/patek4.jfif', description: 'Exclusive Patek Philippe design' },
@@ -55,13 +55,9 @@ watchData.forEach(item => {
   });
 });
 
-// Generate 5 Electronics
+// Generate Electronics
 const electronicsData = [
-  { name: 'Quantum Earbuds Pro', price: 8000, desc: 'High-fidelity audio with active noise cancellation.' },
-  { name: 'Aura Over-Ear Headphones', price: 12000, desc: 'Studio-quality sound in a sleek modern design.' },
-  { name: 'Titan Smart Watch', price: 9500, desc: 'Advanced health tracking with an AMOLED display.' },
-  { name: 'Volt 20k Power Bank', price: 3000, desc: 'Fast-charging metallic power bank.' },
-  { name: 'Sonic Bluetooth Speaker', price: 6500, desc: 'Portable 360-degree sound with deep bass.' }
+  { name: 'TWS Wireless Earbuds', price: 1500, desc: 'High-quality wireless earbuds with charging case and touch control.' }
 ];
 
 electronicsData.forEach((item, index) => {

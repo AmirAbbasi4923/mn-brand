@@ -247,6 +247,7 @@ async function handleCheckoutSubmit(e) {
     products: cart.map(item => `${item.name} (x${item.quantity})`).join(', '),
     quantity: totalQuantity,
     totalPrice: grandTotal,
+    totalAmount: grandTotal,
     date: new Date().toLocaleString()
   };
 
