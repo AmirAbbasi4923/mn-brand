@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+
+<body class="has-announcement">
+
+  <!-- Announcement Bar -->
+  <div id="announcement-bar" class="announcement-bar">
+    <div class="announcement-content">
+      <a href="https://wa.me/923447783981?text=Hi%21%20I%27m%20interested%20in%20your%20perfumes%2Fcosmetics.%20Can%20you%20help%20me%3F" target="_blank" rel="noopener noreferrer">
+        Want to order perfumes or cosmetics? Reach out to us! <i class="fab fa-whatsapp" style="margin-left: 5px;"></i>
+      </a>
+    </div>
+    <button id="close-announcement" class="close-announcement" aria-label="Dismiss announcement">&times;</button>
+  </div>
 
   <!-- Header -->
   <header>
@@ -124,8 +136,10 @@
         <h3>Follow Us</h3>
         <div class="social-icons">
           <a href="https://www.facebook.com/share/1BnkEJv8q7/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://www.instagram.com/mnproducts007?igsh=NmkxZTlxeno0YWV0" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href="https://www.tiktok.com/@sbristhemostbeautiful?_r=1&_t=ZS-97iPxw1pOD3" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.instagram.com/mnproducts007?igsh=NmkxZTlxeno0YWV0" target="_blank"><i
+              class="fab fa-instagram"></i></a>
+          <a href="https://www.tiktok.com/@sbristhemostbeautiful?_r=1&_t=ZS-97iPxw1pOD3" target="_blank"><i
+              class="fab fa-tiktok"></i></a>
         </div>
       </div>
     </div>
@@ -187,7 +201,7 @@
         <label for="notes">Optional Notes</label>
         <textarea id="notes" rows="2"></textarea>
       </div>
-      
+
       <div class="cart-totals" style="margin-top: 20px;">
         <div class="totals-row grand-total">
           <span>Total Cost</span>
@@ -216,7 +230,18 @@
     <button class="btn btn-block" id="close-success">Continue Shopping</button>
   </div>
 
+  <!-- Floating WhatsApp Button -->
+  <a href="https://wa.me/923447783981?text=Hi%21%20I%27m%20interested%20in%20your%20perfumes%2Fcosmetics.%20Can%20you%20help%20me%3F" 
+     class="whatsapp-float" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Chat with us on WhatsApp"
+     title="Chat with us on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

@@ -7,6 +7,7 @@
   --text-secondary: #E2E8F0;
   --font-family: 'Inter', sans-serif;
   --transition: all 0.3s ease;
+  --announcement-height: 40px;
 }
 
 * {
@@ -588,6 +589,168 @@ footer {
     font-size: 2.5rem;
   }
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .product-card {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  .product-card img {
+    height: 120px;
+    margin-bottom: 8px;
+  }
+  .product-card h4 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .product-card p {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+  }
+  .brand-label {
+    font-size: 0.75rem;
+    margin-bottom: 3px;
+  }
+  .size-toggles {
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .size-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+  .product-price {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .product-card .btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+  .brand-section-heading {
+    font-size: 1.4rem;
+    margin-top: 10px;
+    padding-bottom: 6px;
   }
 }
+
+/* Announcement Bar styles */
+.announcement-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--accent-gold);
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001; /* header is 1000, so we want it above header */
+  padding: 8px 45px 8px 15px; /* Leave space for close button on the right */
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.announcement-content a {
+  color: #000000;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.announcement-content a:hover {
+  opacity: 0.8;
+  color: #000000; /* override the global hover yellow color */
+}
+
+.close-announcement {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.close-announcement:hover {
+  opacity: 0.7;
+}
+
+/* Floating WhatsApp Button */
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  background-color: #20ba5a;
+  color: #FFFFFF;
+}
+
+/* Layout offsets based on custom property set by JS */
+body.has-announcement header {
+  top: var(--announcement-height, 40px);
+}
+
+body.has-announcement .hero {
+  margin-top: calc(70px + var(--announcement-height, 40px));
+}
+
+/* Smooth transitions for dismissal / resizing */
+header {
+  transition: top 0.3s ease;
+}
+
+.hero {
+  transition: margin-top 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 26px;
+  }
+  
+  .announcement-bar {
+    font-size: 0.8rem;
+    padding: 6px 40px 6px 10px;
+  }
+}
+

@@ -35,6 +35,8 @@ const DELIVERY_CHARGE = 0;
 function init() {
   renderProducts();
   setupEventListeners();
+  initAnnouncementBar();
+  initDraggableWhatsApp();
 }
 
 // Render Products
@@ -287,6 +289,148 @@ function showSuccess(data) {
 
   successModal.classList.add('show');
   successOverlay.classList.add('show');
+}
+
+// Announcement Bar logic
+function initAnnouncementBar() {
+  const announcementBar = document.getElementById('announcement-bar');
+  const closeAnnouncementBtn = document.getElementById('close-announcement');
+  
+  if (!announcementBar) return;
+
+  // Clear any legacy localStorage values to ensure the bar is visible again
+  if (localStorage.getItem('announcement-dismissed') === 'true') {
+    localStorage.removeItem('announcement-dismissed');
+  }
+
+  function updateAnnouncementHeight() {
+    if (sessionStorage.getItem('announcement-dismissed') === 'true') {
+      announcementBar.style.display = 'none';
+      document.body.classList.remove('has-announcement');
+      document.documentElement.style.setProperty('--announcement-height', '0px');
+    } else {
+      document.body.classList.add('has-announcement');
+      const height = announcementBar.offsetHeight;
+      document.documentElement.style.setProperty('--announcement-height', height + 'px');
+    }
+  }
+
+  // Initial check
+  updateAnnouncementHeight();
+
+  // Watch window resize to handle text wrapping/responsiveness
+  window.addEventListener('resize', updateAnnouncementHeight);
+
+  if (closeAnnouncementBtn) {
+    closeAnnouncementBtn.addEventListener('click', () => {
+      sessionStorage.setItem('announcement-dismissed', 'true');
+      announcementBar.style.display = 'none';
+      document.body.classList.remove('has-announcement');
+      document.documentElement.style.setProperty('--announcement-height', '0px');
+    });
+  }
+}
+
+// Draggable WhatsApp Button
+function initDraggableWhatsApp() {
+  const btn = document.querySelector('.whatsapp-float');
+  if (!btn) return;
+
+  let isDragging = false;
+  let startX, startY;
+  let initialX, initialY;
+  let hasMoved = false;
+
+  // Prevent default browser link drag behavior
+  btn.addEventListener('dragstart', (e) => e.preventDefault());
+
+  function onStart(e) {
+    isDragging = true;
+    hasMoved = false;
+
+    // Get client position (mouse or touch)
+    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+
+    startX = clientX;
+    startY = clientY;
+
+    // Get computed top/left coordinates
+    const rect = btn.getBoundingClientRect();
+    initialX = rect.left;
+    initialY = rect.top;
+
+    // Switch dynamic absolute coordinates from right/bottom to top/left for inline updates
+    btn.style.bottom = 'auto';
+    btn.style.right = 'auto';
+    btn.style.left = initialX + 'px';
+    btn.style.top = initialY + 'px';
+
+    // Disable css transition while dragging for instant cursor updates
+    btn.style.transition = 'none';
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+
+    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+
+    const dx = clientX - startX;
+    const dy = clientY - startY;
+
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      hasMoved = true;
+    }
+
+    let newLeft = initialX + dx;
+    let newTop = initialY + dy;
+
+    // Viewport boundaries checks
+    const rect = btn.getBoundingClientRect();
+    const minLeft = 10;
+    const maxLeft = window.innerWidth - rect.width - 10;
+    const minTop = 10;
+    const maxTop = window.innerHeight - rect.height - 10;
+
+    newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+    newTop = Math.max(minTop, Math.min(newTop, maxTop));
+
+    btn.style.left = newLeft + 'px';
+    btn.style.top = newTop + 'px';
+  }
+
+  function onEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+
+    // Restore transitions
+    btn.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease';
+
+    // Prevent navigation if drag action was active
+    if (hasMoved) {
+      const clickBlocker = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        btn.removeEventListener('click', clickBlocker, true);
+      };
+      btn.addEventListener('click', clickBlocker, true);
+    }
+  }
+
+  // Mouse bindings
+  btn.addEventListener('mousedown', onStart);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+
+  // Touch bindings
+  btn.addEventListener('touchstart', onStart, { passive: true });
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('touchend', onEnd);
 }
 
 // Boot up
