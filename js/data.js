@@ -15,7 +15,7 @@ const perfumeData = [
   { id: 'p12', name: 'Open', sizes: [{size: '30ml', price: 1800}, {size: '50ml', price: 2300}] },
   { id: 'p13', name: 'Marj', sizes: [{size: '30ml', price: 2200}, {size: '50ml', price: 2800}] },
   { id: 'p14', name: 'Motiya', sizes: [{size: '30ml', price: 1500}, {size: '50ml', price: 2000}] },
-  { id: 'p15', name: 'Azaro Wanted', sizes: [{size: '30ml', price: 1650}, {size: '59ml', price: 2100}] }
+  { id: 'p15', name: 'Azaro Wanted', sizes: [{size: '30ml', price: 1650}, {size: '50ml', price: 2100}] }
 ];
 
 perfumeData.forEach(item => {
