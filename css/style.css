@@ -754,3 +754,11 @@ header {
   }
 }
 
+/* Footer contact links hover effect */
+footer .footer-col ul li a {
+  transition: color 0.3s ease;
+}
+
+footer .footer-col ul li a:hover {
+  color: var(--accent-gold) !important;
+}

@@ -1,5 +1,5 @@
 // Replace this with your Google Apps Script Web App URL after deploying
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycEFcGgSNC3NfU3O80xTryyRcclbaTPIOi_3DQarZBAz4VXSSIWK8cbaIN6tpAfdykHQ/exec'; 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzsFbnD0AVIqshKx6TT0In1Xo-DQnP02mBZZs9kIGNfWUerxDF1izC-TiUZxPWRjQZBww/exec'; 
 
 // DOM Elements
 const perfumesGrid = document.getElementById('perfumes-grid');
@@ -33,6 +33,8 @@ const DELIVERY_CHARGE = 0;
 
 // Initialize
 function init() {
+  // Initialize EmailJS with the public key on page load
+  emailjs.init("Z5A_tIHVtRwkAodda");
   renderProducts();
   setupEventListeners();
   initAnnouncementBar();
@@ -231,6 +233,25 @@ function closeCheckout() {
 // Handle Order Submission
 async function handleCheckoutSubmit(e) {
   e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const city = document.getElementById('city').value.trim();
+
+  // Validate that all required fields are filled
+  if (!name || !email || !phone || !address || !city) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+
+  // Validate phone number (exactly 11 digits)
+  if (phone.length !== 11 || !/^\d+$/.test(phone)) {
+    alert("Phone number must be exactly 11 digits (e.g., 03447783981).");
+    return;
+  }
+
   confirmOrderBtn.disabled = true;
   confirmOrderBtn.innerText = 'Processing...';
 
@@ -242,6 +263,7 @@ async function handleCheckoutSubmit(e) {
   const orderData = {
     orderId: orderId,
     name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
     address: document.getElementById('address').value,
     city: document.getElementById('city').value,
@@ -265,6 +287,25 @@ async function handleCheckoutSubmit(e) {
       // Simulate network request if no URL provided
       console.log('No Script URL provided, simulating success.', orderData);
       await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+
+    // EmailJS integration for order notification email
+    try {
+      const emailParams = {
+        order_id: orderData.orderId,
+        name: orderData.name,
+        email: orderData.email,
+        phone: orderData.phone,
+        address: orderData.address,
+        city: orderData.city,
+        products: orderData.products,
+        quantity: orderData.quantity,
+        total_price: orderData.totalPrice
+      };
+      const emailResponse = await emailjs.send('service_fohar5y', 'template_eicxl6k', emailParams);
+      console.log('EmailJS Success:', emailResponse.status, emailResponse.text);
+    } catch (emailError) {
+      console.error('EmailJS Failed:', emailError);
     }
 
     showSuccess(orderData);

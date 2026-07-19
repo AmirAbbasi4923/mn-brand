@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MN AEZAL FRAGRANCE | Premium Perfumes, Watches & Electronics</title>
+  <link rel="icon" type="image/png" href="images/mn_logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- For icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -129,7 +130,11 @@
               <i class="fab fa-whatsapp"></i> +92 344 7783981
             </a>
           </li>
-          <li style="color: var(--text-secondary);"><i class="fas fa-envelope"></i> contact@mnbrand.com</li>
+          <li style="color: var(--text-secondary);">
+            <a href="https://maps.app.goo.gl/WDLpBZkhsiGWjZvw5" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
+              <i class="fas fa-map-marker-alt"></i> Main Lasbela Chowk Musharraf Colony Hawksbay Karachi
+            </a>
+          </li>
         </ul>
       </div>
       <div class="footer-col">
@@ -186,8 +191,12 @@
         <input type="text" id="name" required>
       </div>
       <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
         <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" required>
+        <input type="tel" id="phone" required pattern="[0-9]{11}" maxlength="11" placeholder="e.g. 03447783981" title="Phone number must be exactly 11 digits (e.g. 03001234567)">
       </div>
       <div class="form-group">
         <label for="address">Address</label>
@@ -240,6 +249,7 @@
     <i class="fab fa-whatsapp"></i>
   </a>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
 </body>
